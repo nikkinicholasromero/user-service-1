@@ -4,14 +4,13 @@ import com.demo.controller.exception.UserRegistrationException;
 import com.demo.controller.exception.UserRegistrationExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
-import com.demo.external.hash.HashService;
-import com.demo.external.hash.SaltGenerationService;
 import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
 import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
+import com.demo.service.HashService;
 import com.demo.service.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +20,6 @@ import org.springframework.stereotype.Component;
 public class RegistrationOrchestrator {
     @Autowired
     private EmailAddressService emailAddressService;
-
-    @Autowired
-    private SaltGenerationService saltGenerationService;
 
     @Autowired
     private HashService hashService;
@@ -57,7 +53,7 @@ public class RegistrationOrchestrator {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 
-        String salt = saltGenerationService.generateRandomSalt();
+        String salt = hashService.generateRandomSalt();
         String hash = hashService.hash(userAccount.getPassword(), salt);
         userAccount.setPassword(hash);
         userAccount.setSalt(salt);

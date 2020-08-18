@@ -4,14 +4,13 @@ import com.demo.controller.exception.UserRegistrationException;
 import com.demo.controller.exception.UserRegistrationExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
-import com.demo.external.hash.HashService;
-import com.demo.external.hash.SaltGenerationService;
 import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
 import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
+import com.demo.service.HashService;
 import com.demo.service.UuidGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +30,6 @@ public class RegistrationOrchestratorTest {
 
     @Mock
     private EmailAddressService emailAddressService;
-
-    @Mock
-    private SaltGenerationService saltGenerationService;
 
     @Mock
     private HashService hashService;
@@ -68,7 +64,7 @@ public class RegistrationOrchestratorTest {
         activation.setCode("someActivationCode");
         activation.setExpiration(LocalDateTime.of(2020, 7, 18, 2, 27));
 
-        when(saltGenerationService.generateRandomSalt()).thenReturn("someSalt");
+        when(hashService.generateRandomSalt()).thenReturn("someSalt");
         when(hashService.hash(anyString(), anyString())).thenReturn("someHash");
         when(activationGenerator.generateActivation()).thenReturn(activation);
         when(uuidGenerator.generateRandomUuid()).thenReturn("sommeUuid");
@@ -112,7 +108,7 @@ public class RegistrationOrchestratorTest {
 
         target.orchestrate(userAccount);
 
-        verify(saltGenerationService, times(1)).generateRandomSalt();
+        verify(hashService, times(1)).generateRandomSalt();
         verify(hashService, times(1)).hash("userInputPassword", "someSalt");
         verify(activationGenerator, times(1)).generateActivation();
         verify(uuidGenerator, times(1)).generateRandomUuid();
