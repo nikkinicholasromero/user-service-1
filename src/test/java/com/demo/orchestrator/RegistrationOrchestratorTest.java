@@ -33,13 +33,13 @@ public class RegistrationOrchestratorTest {
     private EmailAddressService emailAddressService;
 
     @Mock
+    private UuidGenerator uuidGenerator;
+
+    @Mock
     private HashService hashService;
 
     @Mock
     private ActivationGenerator activationGenerator;
-
-    @Mock
-    private UuidGenerator uuidGenerator;
 
     @Mock
     private UserAccountRepository userAccountRepository;
@@ -57,9 +57,9 @@ public class RegistrationOrchestratorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        ReflectionTestUtils.setField(target, "activationEmailSender", "someTest@sender.com");
-        ReflectionTestUtils.setField(target, "activationEmailSubject", "Some Test Subject");
-        ReflectionTestUtils.setField(target, "activationEmailTemplate", "some_template");
+        ReflectionTestUtils.setField(target, "sender", "someTest@sender.com");
+        ReflectionTestUtils.setField(target, "subject", "Some Test Subject");
+        ReflectionTestUtils.setField(target, "template", "some_template");
         ReflectionTestUtils.setField(target, "activationLink", "someActivationLink");
 
         Activation activation = new Activation();

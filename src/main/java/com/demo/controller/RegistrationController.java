@@ -12,11 +12,11 @@ import javax.validation.Valid;
 @RequestMapping("/registration")
 public class RegistrationController {
     @Autowired
-    private RegistrationOrchestrator registrationOrchestrator;
+    private RegistrationOrchestrator orchestrator;
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUserAccount(@RequestBody @Valid UserAccount userAccount) {
-        registrationOrchestrator.orchestrate(userAccount);
+    public void register(@RequestBody @Valid UserAccount userAccount) {
+        orchestrator.orchestrate(userAccount);
     }
 }

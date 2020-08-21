@@ -45,7 +45,7 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void registerUserAccount() throws Exception {
+    public void register() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setEmailAddress("some@email.com");
         userAccount.setPassword("somePassword");

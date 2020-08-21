@@ -23,13 +23,13 @@ public class RegistrationOrchestrator {
     private EmailAddressService emailAddressService;
 
     @Autowired
+    private UuidGenerator uuidGenerator;
+
+    @Autowired
     private HashService hashService;
 
     @Autowired
     private ActivationGenerator activationGenerator;
-
-    @Autowired
-    private UuidGenerator uuidGenerator;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -38,13 +38,13 @@ public class RegistrationOrchestrator {
     private EmailService emailService;
 
     @Value("${activation.email.sender}")
-    private String activationEmailSender;
+    private String sender;
 
     @Value("${activation.email.subject}")
-    private String activationEmailSubject;
+    private String subject;
 
     @Value("${activation.email.template}")
-    private String activationEmailTemplate;
+    private String template;
 
     @Value("${activation.link}")
     private String activationLink;
@@ -55,11 +55,14 @@ public class RegistrationOrchestrator {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 
-        Activation activation = createAccount(userAccount);
+        Activation activation = saveAccount(userAccount);
         sendActivationEmail(userAccount, activation);
     }
 
-    private Activation createAccount(UserAccount userAccount) {
+    private Activation saveAccount(UserAccount userAccount) {
+        userAccount.setId(uuidGenerator.generateRandomUuid());
+        userAccount.setStatus(EmailAddressStatus.REGISTERED);
+
         String salt = hashService.generateRandomSalt();
         String hash = hashService.hash(userAccount.getPassword(), salt);
         userAccount.setPassword(hash);
@@ -69,18 +72,17 @@ public class RegistrationOrchestrator {
         userAccount.setActivationCode(activation.getCode());
         userAccount.setActivationExpiration(activation.getExpiration());
 
-        userAccount.setId(uuidGenerator.generateRandomUuid());
-        userAccount.setStatus(EmailAddressStatus.REGISTERED);
         userAccountRepository.save(userAccount);
+
         return activation;
     }
 
     private void sendActivationEmail(UserAccount userAccount, Activation activation) {
         Mail mail = new Mail();
-        mail.setFrom(activationEmailSender);
+        mail.setFrom(sender);
         mail.setTo(userAccount.getEmailAddress());
-        mail.setSubject(activationEmailSubject);
-        mail.setTemplate(activationEmailTemplate);
+        mail.setSubject(subject);
+        mail.setTemplate(template);
         mail.setTemplateVariables(new AccountActivation(activationLink + activation.getCode()));
         emailService.send(mail);
     }
