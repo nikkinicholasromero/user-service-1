@@ -7,6 +7,7 @@ import com.demo.external.email.Mail;
 import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
+import com.demo.model.templatevariables.AccountActivation;
 import com.demo.repository.UserAccountRepository;
 import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
@@ -58,7 +59,8 @@ public class RegistrationOrchestratorTest {
 
         ReflectionTestUtils.setField(target, "activationEmailSender", "someTest@sender.com");
         ReflectionTestUtils.setField(target, "activationEmailSubject", "Some Test Subject");
-        ReflectionTestUtils.setField(target, "activationEmailBody", "Some Test Body");
+        ReflectionTestUtils.setField(target, "activationEmailTemplate", "some_template");
+        ReflectionTestUtils.setField(target, "activationLink", "someActivationLink");
 
         Activation activation = new Activation();
         activation.setCode("someActivationCode");
@@ -133,6 +135,7 @@ public class RegistrationOrchestratorTest {
         assertThat(actualMail.getFrom()).isEqualTo("someTest@sender.com");
         assertThat(actualMail.getTo()).isEqualTo("someEmail@address.com");
         assertThat(actualMail.getSubject()).isEqualTo("Some Test Subject");
-        assertThat(actualMail.getBody()).isEqualTo("Some Test Body");
+        assertThat(actualMail.getTemplate()).isEqualTo("some_template");
+        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("someActivationLinksomeActivationCode"));
     }
 }

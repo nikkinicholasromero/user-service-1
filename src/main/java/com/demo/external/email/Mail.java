@@ -8,4 +8,6 @@ public class Mail {
     private String to;
     private String subject;
     private String body;
+    private String template;
+    private Object templateVariables;
 }

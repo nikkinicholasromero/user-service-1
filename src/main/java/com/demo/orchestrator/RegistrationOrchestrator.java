@@ -7,6 +7,7 @@ import com.demo.external.email.Mail;
 import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
+import com.demo.model.templatevariables.AccountActivation;
 import com.demo.repository.UserAccountRepository;
 import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
@@ -42,8 +43,11 @@ public class RegistrationOrchestrator {
     @Value("${activation.email.subject}")
     private String activationEmailSubject;
 
-    @Value("${activation.email.body}")
-    private String activationEmailBody;
+    @Value("${activation.email.template}")
+    private String activationEmailTemplate;
+
+    @Value("${activation.link}")
+    private String activationLink;
 
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
@@ -70,7 +74,8 @@ public class RegistrationOrchestrator {
         mail.setFrom(activationEmailSender);
         mail.setTo(userAccount.getEmailAddress());
         mail.setSubject(activationEmailSubject);
-        mail.setBody(String.format(activationEmailBody, userAccount.getActivationCode()));
+        mail.setTemplate(activationEmailTemplate);
+        mail.setTemplateVariables(new AccountActivation(activationLink + activation.getCode()));
         emailService.send(mail);
     }
 }

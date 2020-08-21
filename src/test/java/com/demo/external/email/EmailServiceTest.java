@@ -33,7 +33,7 @@ public class EmailServiceTest {
         mail.setSubject("Test Subject");
         mail.setBody("Test body");
 
-        server.expect(requestTo("http://localhost:8120/mail"))
+        server.expect(requestTo("http://localhost:8080/mail"))
                 .andExpect(method(HttpMethod.PUT))
                 .andExpect(content().string(objectMapper.writeValueAsString(mail)))
                 .andRespond(withSuccess());
