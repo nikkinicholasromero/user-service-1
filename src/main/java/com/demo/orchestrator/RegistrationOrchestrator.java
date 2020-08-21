@@ -51,12 +51,15 @@ public class RegistrationOrchestrator {
 
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
-        if (EmailAddressStatus.REGISTERED.equals(status)) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_DUE_FOR_ACTIVATION_EXCEPTION);
-        } else if (EmailAddressStatus.ACTIVATED.equals(status)) {
+        if (EmailAddressStatus.ACTIVATED.equals(status)) {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 
+        Activation activation = createAccount(userAccount);
+        sendActivationEmail(userAccount, activation);
+    }
+
+    private Activation createAccount(UserAccount userAccount) {
         String salt = hashService.generateRandomSalt();
         String hash = hashService.hash(userAccount.getPassword(), salt);
         userAccount.setPassword(hash);
@@ -69,7 +72,10 @@ public class RegistrationOrchestrator {
         userAccount.setId(uuidGenerator.generateRandomUuid());
         userAccount.setStatus(EmailAddressStatus.REGISTERED);
         userAccountRepository.save(userAccount);
+        return activation;
+    }
 
+    private void sendActivationEmail(UserAccount userAccount, Activation activation) {
         Mail mail = new Mail();
         mail.setFrom(activationEmailSender);
         mail.setTo(userAccount.getEmailAddress());

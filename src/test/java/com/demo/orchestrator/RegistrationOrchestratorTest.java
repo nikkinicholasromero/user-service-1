@@ -73,19 +73,6 @@ public class RegistrationOrchestratorTest {
     }
 
     @Test
-    public void orchestrate_whenEmailAddressIsAlreadyRegistered() {
-        when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.REGISTERED);
-
-        UserAccount userAccount = new UserAccount();
-        userAccount.setEmailAddress("someEmail@address.com");
-
-        UserRegistrationException e = assertThrows(UserRegistrationException.class, () -> target.orchestrate(userAccount));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_DUE_FOR_ACTIVATION_EXCEPTION);
-
-        verify(emailAddressService, times(1)).getEmailAddressStatus("someEmail@address.com");
-    }
-
-    @Test
     public void orchestrate_whenEmailAddressIsAlreadyActivated() {
         when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.ACTIVATED);
 
