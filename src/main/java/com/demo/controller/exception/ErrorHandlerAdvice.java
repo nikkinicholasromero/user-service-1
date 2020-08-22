@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class ErrorHandlerAdvice {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        return buildResponseEntity(errorCodes);
+        return buildResponseEntity(errorCodes, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -35,16 +36,21 @@ public class ErrorHandlerAdvice {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.toList());
 
-        return buildResponseEntity(errorCodes);
+        return buildResponseEntity(errorCodes, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserRegistrationException.class)
     public ResponseEntity<ErrorResponse> handleException(UserRegistrationException e) {
-        return buildResponseEntity(Collections.singletonList(e.getType().getCode()));
+        return buildResponseEntity(Collections.singletonList(e.getType().getCode()), HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString) {
+    @ExceptionHandler(EmailServiceException.class)
+    public ResponseEntity<ErrorResponse> handleException(EmailServiceException e) {
+        return buildResponseEntity(Arrays.asList(EmailServiceException.CODE), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString, HttpStatus httpStatus) {
         ErrorResponse errorResponse = errorResponseBuilder.build(errorsString);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, httpStatus);
     }
 }

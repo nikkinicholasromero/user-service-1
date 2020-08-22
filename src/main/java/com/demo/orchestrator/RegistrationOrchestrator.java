@@ -16,6 +16,7 @@ import com.demo.service.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class RegistrationOrchestrator {
@@ -49,10 +50,15 @@ public class RegistrationOrchestrator {
     @Value("${activation.link}")
     private String activationLink;
 
+    @Transactional
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
         if (EmailAddressStatus.ACTIVATED.equals(status)) {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
+        }
+
+        if (EmailAddressStatus.REGISTERED.equals(status)) {
+            userAccountRepository.deleteByEmailAddress(userAccount.getEmailAddress());
         }
 
         Activation activation = saveAccount(userAccount);

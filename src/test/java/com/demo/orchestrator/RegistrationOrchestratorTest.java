@@ -86,6 +86,48 @@ public class RegistrationOrchestratorTest {
     }
 
     @Test
+    public void orchestrate_whenEmailAddressIsRegistered() {
+        when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.REGISTERED);
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setEmailAddress("someEmail@address.com");
+        userAccount.setPassword("userInputPassword");
+        userAccount.setFirstName("Nikki Nicholas");
+        userAccount.setLastName("Romero");
+
+        target.orchestrate(userAccount);
+
+        verify(userAccountRepository, times(1)).deleteByEmailAddress(userAccount.getEmailAddress());
+        verify(hashService, times(1)).generateRandomSalt();
+        verify(hashService, times(1)).hash("userInputPassword", "someSalt");
+        verify(activationGenerator, times(1)).generateActivation();
+        verify(uuidGenerator, times(1)).generateRandomUuid();
+        verify(userAccountRepository, times(1)).save(userAccountArgumentCaptor.capture());
+
+        UserAccount actualUserAccount = userAccountArgumentCaptor.getValue();
+        assertThat(actualUserAccount).isNotNull();
+        assertThat(actualUserAccount.getId()).isEqualTo("sommeUuid");
+        assertThat(actualUserAccount.getEmailAddress()).isEqualTo("someEmail@address.com");
+        assertThat(actualUserAccount.getPassword()).isEqualTo("someHash");
+        assertThat(actualUserAccount.getSalt()).isEqualTo("someSalt");
+        assertThat(actualUserAccount.getActivationCode()).isEqualTo("someActivationCode");
+        assertThat(actualUserAccount.getActivationExpiration()).isEqualTo(LocalDateTime.of(2020, 7, 18, 2, 27));
+        assertThat(actualUserAccount.getStatus()).isEqualTo(EmailAddressStatus.REGISTERED);
+        assertThat(actualUserAccount.getFirstName()).isEqualTo("Nikki Nicholas");
+        assertThat(actualUserAccount.getLastName()).isEqualTo("Romero");
+
+        verify(emailService, times(1)).send(mailArgumentCaptor.capture());
+
+        Mail actualMail = mailArgumentCaptor.getValue();
+        assertThat(actualMail).isNotNull();
+        assertThat(actualMail.getFrom()).isEqualTo("someTest@sender.com");
+        assertThat(actualMail.getTo()).isEqualTo("someEmail@address.com");
+        assertThat(actualMail.getSubject()).isEqualTo("Some Test Subject");
+        assertThat(actualMail.getTemplate()).isEqualTo("some_template");
+        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("someActivationLinksomeActivationCode"));
+    }
+
+    @Test
     public void orchestrate_whenEmailAddressIsAvailable() {
         when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.NOT_REGISTERED);
 
@@ -97,6 +139,7 @@ public class RegistrationOrchestratorTest {
 
         target.orchestrate(userAccount);
 
+        verify(userAccountRepository, never()).deleteByEmailAddress(anyString());
         verify(hashService, times(1)).generateRandomSalt();
         verify(hashService, times(1)).hash("userInputPassword", "someSalt");
         verify(activationGenerator, times(1)).generateActivation();

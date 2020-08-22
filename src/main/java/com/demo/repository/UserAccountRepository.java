@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface UserAccountRepository extends CrudRepository<UserAccount, Integer> {
     Optional<EmailAddressStatusView> getEmailAddressStatusByEmailAddress(String emailAddress);
     Optional<UserAccount> getUserAccountByEmailAddress(String emailAddress);
+    void deleteByEmailAddress(String emailAddress);
 }
