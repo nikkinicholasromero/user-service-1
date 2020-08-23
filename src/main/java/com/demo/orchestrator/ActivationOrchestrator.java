@@ -23,8 +23,8 @@ public class ActivationOrchestrator {
         }
 
         UserAccount userAccount = optionalUserAccount.get();
-        if (!EmailAddressStatus.REGISTERED.equals(userAccount.getStatus())) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_NOT_DUE_FOR_ACTIVATION_EXCEPTION);
+        if (EmailAddressStatus.ACTIVATED.equals(userAccount.getStatus())) {
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
         }
 
         if (!activationCode.equals(userAccount.getActivationCode())) {

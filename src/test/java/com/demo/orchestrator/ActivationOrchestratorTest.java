@@ -51,7 +51,7 @@ public class ActivationOrchestratorTest {
 
         UserRegistrationException e = assertThrows(UserRegistrationException.class,
                 () -> target.orchestrate("some@email.com", "someCode"));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_NOT_DUE_FOR_ACTIVATION_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
