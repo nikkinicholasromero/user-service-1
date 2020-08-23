@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Email;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/activation")
 public class ActivationController {

@@ -1,8 +1,6 @@
 package com.demo;
 
 import com.demo.mock.MockRestTemplateBuilder;
-import com.demo.model.UserAccount;
-import com.demo.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
@@ -17,17 +15,15 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
 @EnableJpaRepositories(
-    basePackages = {"com.demo"},
-    entityManagerFactoryRef = "entityManager",
-    transactionManagerRef = "transactionManager"
+        basePackages = {"com.demo"},
+        entityManagerFactoryRef = "entityManager",
+        transactionManagerRef = "transactionManager"
 )
 public class ApplicationConfig {
     @Value("${demo.database.driver}")
@@ -94,15 +90,5 @@ public class ApplicationConfig {
     @Profile("mock")
     public RestTemplateBuilder restTemplateBuilder() {
         return new MockRestTemplateBuilder();
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
     }
 }
