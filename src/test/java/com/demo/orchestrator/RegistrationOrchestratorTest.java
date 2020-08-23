@@ -60,7 +60,7 @@ public class RegistrationOrchestratorTest {
         ReflectionTestUtils.setField(target, "sender", "someTest@sender.com");
         ReflectionTestUtils.setField(target, "subject", "Some Test Subject");
         ReflectionTestUtils.setField(target, "template", "some_template");
-        ReflectionTestUtils.setField(target, "activationLink", "someActivationLink");
+        ReflectionTestUtils.setField(target, "activationUrl", "http://localhost:4200/accountActivation?emailAddress=%s&activationCode=%s");
 
         Activation activation = new Activation();
         activation.setCode("someActivationCode");
@@ -124,7 +124,7 @@ public class RegistrationOrchestratorTest {
         assertThat(actualMail.getTo()).isEqualTo("someEmail@address.com");
         assertThat(actualMail.getSubject()).isEqualTo("Some Test Subject");
         assertThat(actualMail.getTemplate()).isEqualTo("some_template");
-        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("someActivationLinksomeActivationCode"));
+        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("http://localhost:4200/accountActivation?emailAddress=someEmail@address.com&activationCode=someActivationCode"));
     }
 
     @Test
@@ -166,6 +166,6 @@ public class RegistrationOrchestratorTest {
         assertThat(actualMail.getTo()).isEqualTo("someEmail@address.com");
         assertThat(actualMail.getSubject()).isEqualTo("Some Test Subject");
         assertThat(actualMail.getTemplate()).isEqualTo("some_template");
-        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("someActivationLinksomeActivationCode"));
+        assertThat(actualMail.getTemplateVariables()).isEqualTo(new AccountActivation("http://localhost:4200/accountActivation?emailAddress=someEmail@address.com&activationCode=someActivationCode"));
     }
 }

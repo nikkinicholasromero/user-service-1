@@ -47,8 +47,8 @@ public class RegistrationOrchestrator {
     @Value("${activation.email.template}")
     private String template;
 
-    @Value("${activation.link}")
-    private String activationLink;
+    @Value("${activation.url}")
+    private String activationUrl;
 
     @Transactional
     public void orchestrate(UserAccount userAccount) {
@@ -89,7 +89,7 @@ public class RegistrationOrchestrator {
         mail.setTo(userAccount.getEmailAddress());
         mail.setSubject(subject);
         mail.setTemplate(template);
-        mail.setTemplateVariables(new AccountActivation(activationLink + activation.getCode()));
+        mail.setTemplateVariables(new AccountActivation(String.format(activationUrl, userAccount.getEmailAddress(), activation.getCode())));
         emailService.send(mail);
     }
 }
