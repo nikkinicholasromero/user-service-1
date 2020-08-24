@@ -1,6 +1,7 @@
 package com.demo;
 
 import com.demo.mock.MockRestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
@@ -9,12 +10,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -25,7 +29,7 @@ import java.util.HashMap;
         entityManagerFactoryRef = "entityManager",
         transactionManagerRef = "transactionManager"
 )
-public class ApplicationConfig {
+public class ApplicationConfig implements WebMvcConfigurer {
     @Value("${demo.database.driver}")
     private String driver;
 
@@ -43,6 +47,9 @@ public class ApplicationConfig {
 
     @Value("${hibernate.dialect}")
     private String hibernateDialect;
+
+    @Autowired
+    private Environment environment;
 
     @Bean
     public DataSource dataSource() {
@@ -90,5 +97,12 @@ public class ApplicationConfig {
     @Profile("mock")
     public RestTemplateBuilder restTemplateBuilder() {
         return new MockRestTemplateBuilder();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        String origins = environment.getProperty("cors.allowed-origins");
+        registry.addMapping("/**")
+                .allowedOrigins(origins.split(","));
     }
 }
