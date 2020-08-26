@@ -35,6 +35,12 @@ public class UserAccount {
     @Column(name = "ACTIVATION_EXPIRATION")
     private LocalDateTime activationExpiration;
 
+    @Column(name = "FORGOT_PASSWORD_CODE")
+    private String forgotPasswordCode;
+
+    @Column(name = "FORGOT_PASSWORD_EXPIRATION")
+    private LocalDateTime forgotPasswordExpiration;
+
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private EmailAddressStatus status;

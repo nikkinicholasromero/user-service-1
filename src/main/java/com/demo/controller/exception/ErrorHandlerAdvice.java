@@ -49,6 +49,11 @@ public class ErrorHandlerAdvice {
         return buildResponseEntity(Arrays.asList(EmailServiceException.CODE), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ForgotPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleException(ForgotPasswordException e) {
+        return buildResponseEntity(Arrays.asList(ForgotPasswordException.CODE), HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString, HttpStatus httpStatus) {
         ErrorResponse errorResponse = errorResponseBuilder.build(errorsString);
         return new ResponseEntity<>(errorResponse, httpStatus);

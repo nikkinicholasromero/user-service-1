@@ -1,8 +1,7 @@
 package com.demo.controller;
 
 import com.demo.controller.exception.ErrorHandlerAdvice;
-import com.demo.orchestrator.ActivationOrchestrator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.demo.orchestrator.ForgotPasswordOrchestrator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,18 +16,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ActivationControllerTest {
+public class ForgotPasswordControllerTest {
     private MockMvc mockMvc;
 
     @InjectMocks
-    private ActivationController target;
+    private ForgotPasswordController target;
 
     @Mock
-    private ActivationOrchestrator activationOrchestrator;
+    private ForgotPasswordOrchestrator forgotPasswordOrchestrator;
 
     @Mock
     private ErrorHandlerAdvice errorHandlerAdvice;
-
 
     @BeforeEach
     public void setup() {
@@ -40,11 +38,11 @@ public class ActivationControllerTest {
     }
 
     @Test
-    public void activate() throws Exception {
-        mockMvc.perform(put("/activation/some@email.com?activationCode=abc123"))
+    public void sendForgotPasswordLink() throws Exception {
+        mockMvc.perform(put("/forgotPassword/some@email.com"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(activationOrchestrator, times(1)).orchestrate("some@email.com", "abc123");
+        verify(forgotPasswordOrchestrator, times(1)).orchestrate("some@email.com");
     }
 }
