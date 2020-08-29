@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.controller.exception.UserRegistrationException;
-import com.demo.controller.exception.UserRegistrationExceptionType;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
@@ -36,9 +36,9 @@ public class ActivationOrchestratorTest {
     public void orchestrate_whenEmailAddressDoesNotExist() {
         when(userAccountRepository.getUserAccountByEmailAddress(anyString())).thenReturn(Optional.ofNullable(null));
 
-        UserRegistrationException e = assertThrows(UserRegistrationException.class,
+        UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someCode"));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
@@ -49,9 +49,9 @@ public class ActivationOrchestratorTest {
         userAccount.setStatus(EmailAddressStatus.ACTIVATED);
         when(userAccountRepository.getUserAccountByEmailAddress(anyString())).thenReturn(Optional.of(userAccount));
 
-        UserRegistrationException e = assertThrows(UserRegistrationException.class,
+        UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someCode"));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
@@ -63,9 +63,9 @@ public class ActivationOrchestratorTest {
         userAccount.setActivationCode("someCode");
         when(userAccountRepository.getUserAccountByEmailAddress(anyString())).thenReturn(Optional.of(userAccount));
 
-        UserRegistrationException e = assertThrows(UserRegistrationException.class,
+        UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someIncorrectCode"));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
@@ -78,9 +78,9 @@ public class ActivationOrchestratorTest {
         userAccount.setActivationExpiration(LocalDateTime.now().minusDays(1));
         when(userAccountRepository.getUserAccountByEmailAddress(anyString())).thenReturn(Optional.of(userAccount));
 
-        UserRegistrationException e = assertThrows(UserRegistrationException.class,
+        UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someCode"));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }

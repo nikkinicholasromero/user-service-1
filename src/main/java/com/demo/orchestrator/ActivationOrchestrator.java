@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.controller.exception.UserRegistrationException;
-import com.demo.controller.exception.UserRegistrationExceptionType;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
@@ -19,20 +19,20 @@ public class ActivationOrchestrator {
     public void orchestrate(String emailAddress, String activationCode) {
         Optional<UserAccount> optionalUserAccount = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
         if (!optionalUserAccount.isPresent()) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
         }
 
         UserAccount userAccount = optionalUserAccount.get();
         if (EmailAddressStatus.ACTIVATED.equals(userAccount.getStatus())) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_IS_ALREADY_ACTIVATED_EXCEPTION);
         }
 
         if (!activationCode.equals(userAccount.getActivationCode())) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
         }
 
         if (LocalDateTime.now().isAfter(userAccount.getActivationExpiration())) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
         }
 
         userAccount.setStatus(EmailAddressStatus.ACTIVATED);

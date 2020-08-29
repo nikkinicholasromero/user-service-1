@@ -39,19 +39,14 @@ public class ErrorHandlerAdvice {
         return buildResponseEntity(errorCodes, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserRegistrationException.class)
-    public ResponseEntity<ErrorResponse> handleException(UserRegistrationException e) {
+    @ExceptionHandler(UserServiceException.class)
+    public ResponseEntity<ErrorResponse> handleException(UserServiceException e) {
         return buildResponseEntity(Collections.singletonList(e.getType().getCode()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailServiceException.class)
     public ResponseEntity<ErrorResponse> handleException(EmailServiceException e) {
         return buildResponseEntity(Arrays.asList(EmailServiceException.CODE), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(ForgotPasswordException.class)
-    public ResponseEntity<ErrorResponse> handleException(ForgotPasswordException e) {
-        return buildResponseEntity(Arrays.asList(ForgotPasswordException.CODE), HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString, HttpStatus httpStatus) {

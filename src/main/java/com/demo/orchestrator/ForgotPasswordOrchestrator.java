@@ -1,6 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.controller.exception.ForgotPasswordException;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.model.ForgotPassword;
@@ -40,7 +41,7 @@ public class ForgotPasswordOrchestrator {
     public void orchestrate(String emailAddress) {
         Optional<UserAccount> optionalUserAccount = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
         if (!optionalUserAccount.isPresent()) {
-            throw new ForgotPasswordException();
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
         }
 
         UserAccount userAccount = optionalUserAccount.get();

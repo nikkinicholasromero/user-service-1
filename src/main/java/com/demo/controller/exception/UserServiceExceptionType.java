@@ -3,7 +3,7 @@ package com.demo.controller.exception;
 import lombok.Getter;
 
 @Getter
-public enum UserRegistrationExceptionType {
+public enum UserServiceExceptionType {
     EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION("email-address.activation-code-incorrect"),
     EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION("email-address.activation-expired"),
     EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION("email-address.does-not-exist"),
@@ -12,7 +12,7 @@ public enum UserRegistrationExceptionType {
 
     private final String code;
 
-    UserRegistrationExceptionType(String code) {
+    UserServiceExceptionType(String code) {
         this.code = code;
     }
 }

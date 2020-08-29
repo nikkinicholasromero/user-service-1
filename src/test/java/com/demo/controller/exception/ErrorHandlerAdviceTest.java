@@ -105,8 +105,8 @@ public class ErrorHandlerAdviceTest {
 
     @Test
     public void handleUserRegistrationException() {
-        UserRegistrationException ex = Mockito.mock(UserRegistrationException.class);
-        when(ex.getType()).thenReturn(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+        UserServiceException ex = Mockito.mock(UserServiceException.class);
+        when(ex.getType()).thenReturn(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
 
         ResponseEntity<ErrorResponse> actual = target.handleException(ex);
 

@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.controller.exception.UserRegistrationException;
-import com.demo.controller.exception.UserRegistrationExceptionType;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.model.Activation;
@@ -79,8 +79,8 @@ public class RegistrationOrchestratorTest {
         UserAccount userAccount = new UserAccount();
         userAccount.setEmailAddress("someEmail@address.com");
 
-        UserRegistrationException e = assertThrows(UserRegistrationException.class, () -> target.orchestrate(userAccount));
-        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
+        UserServiceException e = assertThrows(UserServiceException.class, () -> target.orchestrate(userAccount));
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
 
         verify(emailAddressService, times(1)).getEmailAddressStatus("someEmail@address.com");
     }

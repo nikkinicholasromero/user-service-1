@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.controller.exception.UserRegistrationException;
-import com.demo.controller.exception.UserRegistrationExceptionType;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.model.Activation;
@@ -54,7 +54,7 @@ public class RegistrationOrchestrator {
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
         if (EmailAddressStatus.ACTIVATED.equals(status)) {
-            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 
         if (EmailAddressStatus.REGISTERED.equals(status)) {
