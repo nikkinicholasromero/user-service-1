@@ -1,6 +1,7 @@
 package com.demo.external.email;
 
-import com.demo.controller.exception.EmailServiceException;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
@@ -57,7 +59,8 @@ public class EmailServiceTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(mail)))
                 .andRespond(withSuccess());
 
-        assertThrows(EmailServiceException.class, () -> target.send(mail));
+        UserServiceException e = assertThrows(UserServiceException.class, () -> target.send(mail));
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_SERVICE_IS_UNAVAILABLE);
     }
 
     @Test
@@ -73,6 +76,7 @@ public class EmailServiceTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(mail)))
                 .andRespond(withServerError());
 
-        assertThrows(EmailServiceException.class, () -> target.send(mail));
+        UserServiceException e = assertThrows(UserServiceException.class, () -> target.send(mail));
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_SERVICE_IS_UNAVAILABLE);
     }
 }

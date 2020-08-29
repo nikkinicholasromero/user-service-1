@@ -44,11 +44,6 @@ public class ErrorHandlerAdvice {
         return buildResponseEntity(Collections.singletonList(e.getType().getCode()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmailServiceException.class)
-    public ResponseEntity<ErrorResponse> handleException(EmailServiceException e) {
-        return buildResponseEntity(Arrays.asList(EmailServiceException.CODE), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString, HttpStatus httpStatus) {
         ErrorResponse errorResponse = errorResponseBuilder.build(errorsString);
         return new ResponseEntity<>(errorResponse, httpStatus);

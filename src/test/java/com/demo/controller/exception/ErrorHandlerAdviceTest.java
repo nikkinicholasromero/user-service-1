@@ -121,22 +121,4 @@ public class ErrorHandlerAdviceTest {
         assertThat(errorCodes.size()).isEqualTo(1);
         assertThat(errorCodes.indexOf("email-address.activation-code-incorrect")).isNotNegative();
     }
-
-    @Test
-    public void handleEmailServiceException() {
-        EmailServiceException ex = new EmailServiceException();
-
-        ResponseEntity<ErrorResponse> actual = target.handleException(ex);
-
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        assertThat(actual.getBody()).isEqualTo(errorResponse);
-
-        verify(errorResponseBuilder, times(1))
-                .build(errorCodesArgumentCaptor.capture());
-        List<String> errorCodes = errorCodesArgumentCaptor.getValue();
-        assertThat(errorCodes).isNotEmpty();
-        assertThat(errorCodes.size()).isEqualTo(1);
-        assertThat(errorCodes.indexOf("email-service.unavailable")).isNotNegative();
-    }
 }

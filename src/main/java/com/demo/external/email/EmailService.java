@@ -1,6 +1,7 @@
 package com.demo.external.email;
 
-import com.demo.controller.exception.EmailServiceException;
+import com.demo.controller.exception.UserServiceException;
+import com.demo.controller.exception.UserServiceExceptionType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -29,10 +30,10 @@ public class EmailService {
             HttpEntity<Mail> httpEntity = new HttpEntity<>(mail);
             ResponseEntity<Object> responseEntity = restTemplate.exchange(host + endpoint, HttpMethod.PUT, httpEntity, Object.class);
             if (HttpStatus.CREATED != responseEntity.getStatusCode()) {
-                throw new EmailServiceException();
+                throw new UserServiceException(UserServiceExceptionType.EMAIL_SERVICE_IS_UNAVAILABLE);
             }
         } catch (Exception e) {
-            throw new EmailServiceException();
+            throw new UserServiceException(UserServiceExceptionType.EMAIL_SERVICE_IS_UNAVAILABLE);
         }
     }
 }
