@@ -41,7 +41,8 @@ public class ErrorHandlerAdvice {
 
     @ExceptionHandler(UserServiceException.class)
     public ResponseEntity<ErrorResponse> handleException(UserServiceException e) {
-        return buildResponseEntity(Collections.singletonList(e.getType().getCode()), HttpStatus.BAD_REQUEST);
+        UserServiceExceptionType type = e.getType();
+        return buildResponseEntity(Collections.singletonList(type.getCode()), type.getHttpStatus());
     }
 
     private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString, HttpStatus httpStatus) {

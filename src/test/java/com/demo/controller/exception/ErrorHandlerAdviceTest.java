@@ -105,20 +105,21 @@ public class ErrorHandlerAdviceTest {
 
     @Test
     public void handleUserRegistrationException() {
+        UserServiceExceptionType type = UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION;
+
         UserServiceException ex = Mockito.mock(UserServiceException.class);
-        when(ex.getType()).thenReturn(UserServiceExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+        when(ex.getType()).thenReturn(type);
 
         ResponseEntity<ErrorResponse> actual = target.handleException(ex);
 
         assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(actual.getStatusCode()).isEqualTo(type.getHttpStatus());
         assertThat(actual.getBody()).isEqualTo(errorResponse);
 
-        verify(errorResponseBuilder, times(1))
-                .build(errorCodesArgumentCaptor.capture());
+        verify(errorResponseBuilder, times(1)).build(errorCodesArgumentCaptor.capture());
         List<String> errorCodes = errorCodesArgumentCaptor.getValue();
         assertThat(errorCodes).isNotEmpty();
         assertThat(errorCodes.size()).isEqualTo(1);
-        assertThat(errorCodes.indexOf("email-address.activation-code-incorrect")).isNotNegative();
+        assertThat(errorCodes.indexOf(type.getCode())).isNotNegative();
     }
 }
