@@ -50,7 +50,7 @@ public class ForgotPasswordCodeValidationOrchestratorTest {
 
         UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someIncorrectCode"));
-        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_FORGOT_PASSWORD_CODE_INCORRECT_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.FORGOT_PASSWORD_CODE_INCORRECT_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
@@ -64,7 +64,7 @@ public class ForgotPasswordCodeValidationOrchestratorTest {
 
         UserServiceException e = assertThrows(UserServiceException.class,
                 () -> target.orchestrate("some@email.com", "someCode"));
-        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.EMAIL_ADDRESS_FORGOT_PASSWORD_EXPIRED_EXCEPTION);
+        assertThat(e.getType()).isEqualTo(UserServiceExceptionType.FORGOT_PASSWORD_EXPIRED_EXCEPTION);
 
         verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
     }
