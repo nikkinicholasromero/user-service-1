@@ -11,11 +11,11 @@ import javax.validation.constraints.Email;
 @RequestMapping("/forgotPassword")
 public class ForgotPasswordController {
     @Autowired
-    private ForgotPasswordOrchestrator forgotPasswordOrchestrator;
+    private ForgotPasswordOrchestrator orchestrator;
 
     @PutMapping("/{emailAddress:.+}")
     public void sendForgotPasswordLink(
             @PathVariable("emailAddress") @Email(message = "validation.email-address.format") String emailAddress) {
-        forgotPasswordOrchestrator.orchestrate(emailAddress);
+        orchestrator.orchestrate(emailAddress);
     }
 }

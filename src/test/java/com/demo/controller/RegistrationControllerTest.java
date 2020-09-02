@@ -26,7 +26,7 @@ public class RegistrationControllerTest {
     private RegistrationController target;
 
     @Mock
-    private RegistrationOrchestrator registrationOrchestrator;
+    private RegistrationOrchestrator orchestrator;
 
     @Mock
     private ErrorHandlerAdvice errorHandlerAdvice;
@@ -58,6 +58,6 @@ public class RegistrationControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        verify(registrationOrchestrator, times(1)).orchestrate(eq(userAccount));
+        verify(orchestrator, times(1)).orchestrate(eq(userAccount));
     }
 }

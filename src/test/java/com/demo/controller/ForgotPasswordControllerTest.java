@@ -23,7 +23,7 @@ public class ForgotPasswordControllerTest {
     private ForgotPasswordController target;
 
     @Mock
-    private ForgotPasswordOrchestrator forgotPasswordOrchestrator;
+    private ForgotPasswordOrchestrator orchestrator;
 
     @Mock
     private ErrorHandlerAdvice errorHandlerAdvice;
@@ -43,6 +43,6 @@ public class ForgotPasswordControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(forgotPasswordOrchestrator, times(1)).orchestrate("some@email.com");
+        verify(orchestrator, times(1)).orchestrate("some@email.com");
     }
 }

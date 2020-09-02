@@ -11,12 +11,12 @@ import javax.validation.constraints.Email;
 @RequestMapping("/activation")
 public class ActivationController {
     @Autowired
-    private ActivationOrchestrator activationOrchestrator;
+    private ActivationOrchestrator orchestrator;
 
     @PutMapping("/{emailAddress:.+}")
     public void activate(
             @PathVariable("emailAddress") @Email(message = "validation.email-address.format") String emailAddress,
             @RequestParam("activationCode") String activationCode) {
-        activationOrchestrator.orchestrate(emailAddress, activationCode);
+        orchestrator.orchestrate(emailAddress, activationCode);
     }
 }

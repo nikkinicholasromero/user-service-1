@@ -2,7 +2,6 @@ package com.demo.controller;
 
 import com.demo.controller.exception.ErrorHandlerAdvice;
 import com.demo.orchestrator.ActivationOrchestrator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,7 +23,7 @@ public class ActivationControllerTest {
     private ActivationController target;
 
     @Mock
-    private ActivationOrchestrator activationOrchestrator;
+    private ActivationOrchestrator orchestrator;
 
     @Mock
     private ErrorHandlerAdvice errorHandlerAdvice;
@@ -44,6 +43,6 @@ public class ActivationControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(activationOrchestrator, times(1)).orchestrate("some@email.com", "abc123");
+        verify(orchestrator, times(1)).orchestrate("some@email.com", "abc123");
     }
 }
